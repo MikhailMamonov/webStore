@@ -1,12 +1,17 @@
-﻿<div>
-    <label>Введите email</label><br />
-    <input type="email" id="email" /> <br /><br />
-    <label>Введите пароль</label><br />
-    <input type="password" id="password" /><br /><br />
-    <label>Подтвердите пароль</label><br />
-    <input type="password" id="confirmpassword" /><br /><br />
-    <input type="submit" id="submit" value="Регистрация" />
-</div>
+﻿@using Microsoft.AspNet.Identity
+
+
+    <ul class="nav navbar-nav navbar-right">
+        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
+        <li class="loginButton">@Html.ActionLink("Log in", "Login","Home")</li>
+      
+        <li class="userInfo" style="display: none">
+            Hello <span class="userName"></span><input type="button" value="log Out" id="logOut" />
+        </li>
+    </ul>
+
+
+
 
 @section scripts{
     <script type="text/javascript">
@@ -19,7 +24,7 @@
                     type: 'GET',
                     url: '/api/values/',
                     beforeSend: function (xhr) {
-                     
+
                         var token = sessionStorage.getItem(tokenKey);
                         xhr.setRequestHeader("Authorization", "Bearer " + token);
                     },
@@ -36,7 +41,7 @@
     <script type="text/javascript">
         $(function () {
             //...........................
- 
+
             var tokenKey = "tokenInfo";
             $('#submitLogin').click(function (e) {
                 e.preventDefault();
@@ -45,7 +50,7 @@
                     username: $('#emailLogin').val(),
                     password: $('#passwordLogin').val()
                 };
- 
+
                 $.ajax({
                     type: 'POST',
                     url: '/Token',
@@ -53,7 +58,7 @@
                 }).success(function (data) {
                     $('.userName').text(data.userName);
                     $('.userInfo').css('display', 'block');
-                    $('.loginForm').css('display', 'none');
+                    $('.loginButton').css('display', 'none');
                     // сохраняем в хранилище sessionStorage токен доступа
                     sessionStorage.setItem(tokenKey, data.access_token);
                     console.log(data.access_token);
@@ -61,16 +66,16 @@
                     alert('При логине возникла ошибка');
                 });
             });
- 
+
             $('#logOut').click(function (e) {
                 e.preventDefault();
                 $('.userInfo').css('display', 'none');
-                $('.loginForm').css('display', 'block');
+                $('.loginButton').css('display', 'block');
                 sessionStorage.removeItem(tokenKey);
             });
         })
     </script>
-<script type="text/javascript">
+    <script type="text/javascript">
         $(function () {
             $('#submit').click(function (e) {
                 e.preventDefault();
@@ -92,6 +97,6 @@
                 });
             });
         })
-</script>
+    </script>
 
 }
